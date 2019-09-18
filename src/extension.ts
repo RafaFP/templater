@@ -1,20 +1,39 @@
+import * as path from 'path';
 import * as vscode from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
+  context.subscriptions.push(
+    vscode.commands.registerCommand('catCoding.start', () => {
+      const panel = vscode.window.createWebviewPanel(
+        'catCoding',
+        'Cat Coding',
+        vscode.ViewColumn.One,
+        {
+          // Enable scripts in the webview
+          enableScripts: true
+        }
+      );
 
-	console.log('Congratulations, your extension "templater" is now active!');
-
-	let snip = vscode.commands.registerCommand('extension.addSnip', () => {
-		vscode.window.showErrorMessage('no full implement for this yet man');
-	});
-
-	let time_command = vscode.commands.registerCommand('extension.time', () => {
-		let d = new Date();
-
-		vscode.window.showInformationMessage(d.toString());
-	});
-
-	context.subscriptions.push(snip, time_command);
+      panel.webview.html = getWebviewContent();
+		}),
+		vscode.commands.registerCommand('extension.time', () => {
+			let d = new Date();
+		
+			vscode.window.showInformationMessage(d.toString());
+  );
 }
 
-export function deactivate() { }
+function getWebviewContent() {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cat Coding</title>
+</head>
+<body>
+		<img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" width="300" />
+		
+</body>
+</html>`;
+}
