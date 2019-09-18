@@ -13,27 +13,28 @@ export function activate(context: vscode.ExtensionContext) {
           enableScripts: true
         }
       );
-
-      panel.webview.html = getWebviewContent();
+			let date = new Date();
+      panel.webview.html = getWebviewContent(date.toString());
 		}),
 		vscode.commands.registerCommand('extension.time', () => {
-			let d = new Date();
+			const d = new Date();
 		
 			vscode.window.showInformationMessage(d.toString());
-  );
+		})
+	)
 }
 
-function getWebviewContent() {
+function getWebviewContent(date: string) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+		<meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; frame-src https:;">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cat Coding</title>
 </head>
 <body>
-		<img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" width="300" />
-		
+    <iframe src="https://www.rosettacode.org/wiki/Factorial#Java" width = "100%" height = "1000" />
 </body>
 </html>`;
 }
