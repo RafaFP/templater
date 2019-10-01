@@ -4,69 +4,23 @@ import * as copypaste from 'copy-paste';
 import * as stack from 'stackexchange';
 
 export function activate(context: vscode.ExtensionContext) {
-  var global: string;
-
   context.subscriptions.push(
     vscode.commands.registerCommand('searchPage.start', () => {
       var options = { version: 2.2 };
       var context = new stack(options);
 
-      showInputBox(options, context);
+      listAnsweredQuestions(options, context);
     }),
 
 
 
 		vscode.commands.registerCommand('searchPage.selectedCode', () => {
+      var options = { version: 2.2 };
+      var context = new stack(options);
 
-			const setting: vscode.Uri = vscode.Uri.parse("untitled:" + "Selected Code");
-      vscode.workspace.openTextDocument(setting).then((a: vscode.TextDocument) => {
-        vscode.window.showTextDocument(a, 1, false).then(e => {
-            e.edit(edit => {
-                edit.insert(new vscode.Position(0, 0), global);
-            });
-          });
-      })
+      const answer = buildAnswerSelected(options, context, 57562177);    
     })
   )
-}
-
-function buildWebview(item:any) {
-  const panel = vscode.window.createWebviewPanel(
-    'searchPage',
-    'Search page',
-    vscode.ViewColumn.One,
-    {
-      enableScripts: true
-    }
-  );
-
-  panel.webview.html = 
-  `<!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta http-equiv="Content-Security-Policy" content="default-src 'none';">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>templater</title>
-            </head>
-            <body>
-                ${content}
-                <script>
-                  (function() {
-                      const vscode = acquireVsCodeApi();
-                      setInterval(() => {
-                        if (true) {
-                          vscode.postMessage({
-                              command: 'selection',
-                              text: 'a'
-                          })
-                        }
-                      }, 1000);
-                  }())
-                </script>
-
-            </body>
-            </html>`;
 }
 
 function buildAnsweredItems(items:any){
@@ -88,8 +42,7 @@ function buildAnsweredItems(items:any){
   })
 }
 
-async function showInputBox(options:any, context:any) {
-  let query:string;
+async function listAnsweredQuestions(options:any, context:any) {
 	let result = await vscode.window.showInputBox({
     placeHolder: 'For example: Java loop'
   });
@@ -98,11 +51,49 @@ async function showInputBox(options:any, context:any) {
     pagesize: 5,
     intitle: result,
     sort: 'activity',
-    order: 'desc'
+    order: 'desc',
+    site: 'stackoverflow'
   };
   context.search.search(filter, function(err, results){
     if (err) throw err;
     
     buildAnsweredItems(results.items);
   });
+}
+
+async function buildAnswerSelected(options:any, context:any, id:any) {
+  var filter = {
+    filter: 'withbody',
+    site: 'stackoverflow'
+  };
+  context.answers.answers(filter, function(err, results){
+    if (err) throw err;
+    
+    console.log(results.items);
+    getQuestion(options, context, results.items[0])
+  }, [id])
+}
+
+async function getQuestion(options:any, context:any, answer:any) {
+  var filter = {
+    filter: 'withbody',
+    site: 'stackoverflow'
+  };
+  context.questions.questions(filter, function(err, results){
+    if (err) throw err;
+    
+    console.log(results.items);
+    buildTextResult(results.items[0].body + '\n\n\n' + answer.body);
+  }, [57561617])
+}
+
+function buildTextResult(content:string){
+  const setting: vscode.Uri = vscode.Uri.parse("untitled:" + "Selected Code");
+  vscode.workspace.openTextDocument(setting).then((a: vscode.TextDocument) => {
+    vscode.window.showTextDocument(a, 1, false).then(e => {
+        e.edit(edit => {
+            edit.insert(new vscode.Position(0, 0), content);
+        });
+      });
+  })
 }
