@@ -10,9 +10,9 @@ export async function multipick() {
 		title: string;
 		step: number;
     totalSteps: number;
-    resourceGroup: QuickPickItem | string;
+    resourceGroup: vscode.QuickPickItem | string;
 		query: string;
-		answer: QuickPickItem;
+		answer: vscode.QuickPickItem;
 	}
 
 	async function collectInputs() {
@@ -55,24 +55,24 @@ export async function multipick() {
 		});
   }
   
-	function itemsBuilder(query:string): Promise<QuickPickItem[]> {
+	function itemsBuilder(query:string): Promise<vscode.QuickPickItem[]> {
     var filter = {
       pagesize: 5,
       intitle: query,
       sort: 'activity',
       order: 'desc',
       site: 'stackoverflow'
-    };
-    
-    return new Promise(resolve => context.search.search(filter, function(err, results){
+		};
+
+    return new Promise(resolve => context.search.search(filter, function(err:Error, results){
         if (err) throw err;
-        let resultPicks = results.items.map(obj => {let nObj = {};
+        let resultPicks = results.items.map(obj => {let nObj:ResultForPick = {};
           if(obj.is_answered && obj.accepted_answer_id){
             nObj.label = obj.title;
             nObj.answer = obj.accepted_answer_id;
             return nObj;
           }
-        }).filter(function (el) {return el != null})
+        }).filter(function (el:ResultForPick) {return el != null})
         resolve(resultPicks);
       }));
 	}
@@ -87,7 +87,7 @@ async function buildAnswerSelected(options:any, context:any, id:any) {
     filter: 'withbody',
     site: 'stackoverflow'
   };
-  context.answers.answers(filter, function(err, results){
+  context.answers.answers(filter, function(err:Error, results){
     if (err) throw err;
     
     getQuestionAndOpenAsText(options, context, results.items[0])
@@ -99,7 +99,7 @@ async function getQuestionAndOpenAsText(options:any, context:any, answer:any) {
     filter: 'withbody',
     site: 'stackoverflow'
   };
-  context.questions.questions(filter, function(err, results){
+  context.questions.questions(filter, function(err:Error, results){
     if (err) throw err;
     const questionFixed = striptags(`QUESTION: ##########################################################
 																		\n${results.items[0].title}
@@ -132,7 +132,12 @@ class InputFlowAction {
 
 type InputStep = (input: MultiStepInput) => Thenable<InputStep | void>;
 
-interface QuickPickParameters<T extends QuickPickItem> {
+interface ResultForPick {
+	label: string,
+	answer: string
+}
+
+interface QuickPickParameters<T extends vscode.QuickPickItem> {
 	title: string;
 	step: number;
 	totalSteps: number;
@@ -158,7 +163,7 @@ class MultiStepInput {
 		return input.stepThrough(start);
 	}
 
-	private current?: QuickInput;
+	private current?: vscode.QuickInput;
 	private steps: InputStep[] = [];
 
 	private async stepThrough<T>(start: InputStep) {
@@ -189,8 +194,8 @@ class MultiStepInput {
 		}
 	}
 
-	async showQuickPick<T extends QuickPickItem, P extends QuickPickParameters<T>>({ title, step, totalSteps, items, activeItem, placeholder, shouldResume }: P) {
-		const disposables: Disposable[] = [];
+	async showQuickPick<T extends vscode.QuickPickItem, P extends QuickPickParameters<T>>({ title, step, totalSteps, items, activeItem, placeholder, shouldResume }: P) {
+		const disposables: vscode.Disposable[] = [];
 		try {
 			return await new Promise<T | (P extends { buttons: (infer I)[] } ? I : never)>((resolve, reject) => {
 				const input = vscode.window.createQuickPick<T>();
@@ -204,7 +209,7 @@ class MultiStepInput {
 				}
 				disposables.push(
 					input.onDidTriggerButton(item => {
-						if (item === QuickInputButtons.Back) {
+						if (item === vscode.QuickInputButtons.Back) {
 							reject(InputFlowAction.back);
 						} else {
 							resolve(<any>item);
@@ -231,7 +236,7 @@ class MultiStepInput {
 	
 
 	async showInputBox<P extends InputBoxParameters>({ title, step, totalSteps, value, prompt, shouldResume }: P) {
-		const disposables: Disposable[] = [];
+		const disposables: vscode.Disposable[] = [];
 		try {
 			return await new Promise<string | (P extends { buttons: (infer I)[] } ? I : never)>((resolve, reject) => {
 				const input = vscode.window.createInputBox();
