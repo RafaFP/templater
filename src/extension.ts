@@ -1,10 +1,7 @@
-import * as path from 'path';
 import * as vscode from 'vscode';
 import { multipick } from './multistepinput';
-import { pathSnippets } from './snippetpath';
-import * as jsonfile from 'jsonfile';
-import * as appdata from 'appdata-path';
-
+import * as snippet from './snippet';
+import * as model from './templatermodelsnippet';
 
 export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
@@ -12,12 +9,11 @@ export function activate(context: vscode.ExtensionContext) {
       const answer = multipick();
     }),
     vscode.commands.registerCommand('saveSnippet.edit', () => {
-      const file = (pathSnippets())
-      jsonfile.readFile(file, function (err, obj) {
-        if (err) console.error(err)
-        console.log(obj)
-        
-      })
+      const editor = vscode.window.activeTextEditor;
+      let text = editor.document.getText(editor.selection);
+      //snippet.log();
+      //console.log(model.model);
+      console.log(text);
     })
   )
 }

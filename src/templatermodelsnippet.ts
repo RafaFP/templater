@@ -1,0 +1,2 @@
+export const model = 
+'{\n  "Snippet Model": {\n    "prefix": "templater model",\n    "body": [\n      "if((${1:variable}) != \'undefined\'){",\n      "  console.log(${1:variable});",\n      "} else {",\n      "  console.log(${2:error})",\n      ","\n    ],\n    "description": "a model for you to edit your own snippets"\n  }\n}'
