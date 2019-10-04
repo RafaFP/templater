@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import * as vscode from 'vscode';
 import { pathSnippets } from './snippetpath';
 import { model, newSnip } from './templatermodelsnippet';
 
@@ -14,6 +15,16 @@ export function appendAndOpenFile(text:string){
       if (err) console.error(err)
     })
   });
+  vscode.workspace.openTextDocument(file).then((a: vscode.TextDocument) => {
+    vscode.window.showTextDocument(a, 1, false).then(e => {
+      let lastLine = e.document.lineAt(e.document.lineCount - 1);
+      let position = new vscode.Position(lastLine.lineNumber, 0);
+      let newSelection = new vscode.Selection(position, position);
+      let newRange = new vscode.Range(position, position);
+      e.selection = newSelection;
+      e.revealRange(newRange, 3);
+    });
+  })
 }
 
 function getSnippets() {

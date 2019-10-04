@@ -9,6 +9,7 @@
 	"categories": [
 		"Other"
 	],
+	"publisher": "RafaFP",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/RafaFP/templater.git"
@@ -40,10 +41,11 @@
 	},
 	"dependencies": {
 		"@types/copy-paste": "^1.1.30",
+		"appdata-path": "^1.0.0",
 		"copy-paste": "^1.3.0",
 		"stackexchange": "^1.2.0",
 		"striptags": "^3.1.1",
-		"appdata-path": "^1.0.0"
+		"vsce": "^1.67.1"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",
