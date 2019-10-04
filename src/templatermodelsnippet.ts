@@ -1,2 +1,20 @@
 export const model = 
-'{\n  "Snippet Model": {\n    "prefix": "templater model",\n    "body": [\n      "if((${1:variable}) != \'undefined\'){",\n      "  console.log(${1:variable});",\n      "} else {",\n      "  console.log(${2:error})",\n      ","\n    ],\n    "description": "a model for you to edit your own snippets"\n  }\n}'
+{
+  "Snippet Model": {
+    "prefix": "templater model",
+    "body": [
+      "if((${1:variable}) != 'undefined'){",
+      "  console.log(${1:variable});",
+      "} else {",
+      "  console.log(${2:error})",
+      ","
+    ],
+    "description": "a model for you to edit your own snippets"
+  }
+};
+
+export const newSnip = {
+  "prefix": "<new template shortcut>",
+  "body": [],
+  "description": "<new template description>"
+};

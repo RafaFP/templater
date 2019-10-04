@@ -66,7 +66,7 @@ export async function multipick() {
 
     return new Promise(resolve => context.search.search(filter, function(err:Error, results){
         if (err) throw err;
-        let resultPicks = results.items.map(obj => {let nObj:ResultForPick = {};
+        let resultPicks = results.items.map(obj => {let nObj:ResultForPick = {"label":"", "answer": ""};
           if(obj.is_answered && obj.accepted_answer_id){
             nObj.label = obj.title;
             nObj.answer = obj.accepted_answer_id;
