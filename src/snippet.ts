@@ -9,9 +9,8 @@ export function log(){
 export function appendAndOpenFile(text:string){
   const file:string = (pathSnippets());
   const obj = getSnippets().then(res => {
-    console.log(buildNewSnip(res, text))
 
-    fs.writeFile(file, JSON.stringify(res, null, 2), function (err) {
+    fs.writeFile(file, JSON.stringify(buildNewSnip(res, text), null, 2), function (err) {
       if (err) console.error(err)
     })
   });
@@ -41,9 +40,16 @@ function initialize() {
 }
 
 function buildNewSnip(res:string,text:string) {
+  //setup
   let r = Math.random().toString(36).substring(7);
   let name = `rename snippet ${r}`
-  res[name] = newSnip;
-  console.log(res)
-  //return JSON.stringify(JSON.parse(`{"rename snippet ${r}": ${JSON.stringify(newSnip)}}`), null, 2);
+  let resolvedSnippets = JSON.parse(JSON.stringify(res));
+
+  //add code
+  let createdSnip = JSON.parse(JSON.stringify(newSnip));
+  createdSnip.body = text.split('\n');
+
+  //build json
+  resolvedSnippets[name] = createdSnip;
+  return resolvedSnippets;
 }
