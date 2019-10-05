@@ -28,7 +28,7 @@ export async function multipick() {
 			title,
 			step: 1,
 			totalSteps: 2,
-      value: state.query || '',
+      value: state.query || 'java loop',
 			prompt: 'Enter a query for the Stackoverflow question title',
       shouldResume: shouldResume
     });
@@ -36,13 +36,13 @@ export async function multipick() {
   }
   
   async function pickAnsweredQuestion(input: MultiStepInput, state: Partial<State>) {
-    const runtimes = await itemsBuilder(state.query);
+    const queryResults = await itemsBuilder(state.query!);
 		const pick = await input.showQuickPick({
 			title,
 			step: 2,
       totalSteps: 2,
-      items: runtimes,
-      activeItem: typeof state.answer !== 'string' ? state.answer : undefined,
+      items: queryResults,
+      activeItem: state.answer,
       placeholder: '',      
 			shouldResume: shouldResume
 		});
@@ -55,7 +55,7 @@ export async function multipick() {
 		});
   }
   
-	function itemsBuilder(query:string): Promise<vscode.QuickPickItem[]> {
+	function itemsBuilder(query: string): Promise<vscode.QuickPickItem[]> {
     var filter = {
       pagesize: 5,
       intitle: query,
@@ -78,7 +78,7 @@ export async function multipick() {
 	}
 
   const state = await collectInputs();
-  vscode.window.showInformationMessage(`Getting the content: '${state.answer.answer}'`);
+  vscode.window.showInformationMessage(`Getting the content`);
   buildAnswerSelected(options, context, state.answer.answer);
 }
 

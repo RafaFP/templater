@@ -27,24 +27,30 @@ export function appendAndOpenFile(text:string){
   })
 }
 
-function getSnippets() {
+function getSnippets():Promise<string> {
   const file:string = (pathSnippets());
-  return new Promise(resolve => {
-    fs.readFile(file, function (err, obj) {
-      if (err || !obj.toString('utf8')) { initialize().then(res => {resolve(res)}) }
-      resolve(JSON.parse(obj));
+  return new Promise(
+    resolve => {
+      fs.readFile(
+        file, function (err, obj) {
+          if (err || !obj.toString('utf8')) { 
+            initialize().then(res => {resolve(res)}) 
+          }
+          resolve(JSON.parse(obj.toString('utf8')));
+        }
+      )
     }
-  }));
+  );
 }
 
-function initialize() {
+function initialize():Promise<string> {
   const file:string = (pathSnippets());
   return new Promise (resolve => {
     fs.writeFile(file, JSON.stringify(model, null, 2), function (err) {
       if (err) console.error(err)
       fs.readFile(file, function (err, obj) {
         if (err) { console.error(err) }
-        resolve(JSON.parse(obj));
+        resolve(JSON.parse(obj.toString('utf8')));
       })
     })
   });

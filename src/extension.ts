@@ -9,7 +9,7 @@ export function activate(context: vscode.ExtensionContext) {
     }),
     vscode.commands.registerCommand('saveSnippet.edit', () => {
       const editor = vscode.window.activeTextEditor;
-      if(vscode.window.activeTextEditor && editor.document.getText(editor.selection)){
+      if(vscode.window.activeTextEditor && editor !== undefined && editor.document.getText(editor.selection)){
         let text = editor.document.getText(editor.selection);
         snippet.appendAndOpenFile(text);
       } else {
