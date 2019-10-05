@@ -13,6 +13,9 @@ Search is very bad using stackexchange API.
 
 ## Release Notes
 
+### 0.0.2
+Pusblished on the store for controlled testing.
+
 ### 0.0.1
 
 First version with the full promised functionality.
