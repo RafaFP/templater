@@ -12,7 +12,7 @@ export async function multipick() {
     totalSteps: number;
     resourceGroup: vscode.QuickPickItem | string;
 		query: string;
-		answer: vscode.QuickPickItem;
+		answer: ResultForPick;
 	}
 
 	async function collectInputs() {
@@ -57,7 +57,7 @@ export async function multipick() {
   
 	function itemsBuilder(query: string): Promise<vscode.QuickPickItem[]> {
     var filter = {
-      pagesize: 5,
+      pagesize: 50,
       intitle: query,
       sort: 'activity',
       order: 'desc',
@@ -72,7 +72,7 @@ export async function multipick() {
             nObj.answer = obj.accepted_answer_id;
             return nObj;
           }
-        }).filter(function (el:ResultForPick) {return el != null})
+				}).filter(function (el:ResultForPick) {return el != null})
         resolve(resultPicks);
       }));
 	}
@@ -134,7 +134,7 @@ type InputStep = (input: MultiStepInput) => Thenable<InputStep | void>;
 
 interface ResultForPick {
 	label: string,
-	answer: string
+	answer?: string
 }
 
 interface QuickPickParameters<T extends vscode.QuickPickItem> {
