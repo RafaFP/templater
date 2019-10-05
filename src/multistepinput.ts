@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import * as stack from 'stackexchange';
+const stack = require('stackexchange');
 import * as striptags from 'striptags';
 
 export async function multipick() {
@@ -64,9 +64,9 @@ export async function multipick() {
       site: 'stackoverflow'
 		};
 
-    return new Promise(resolve => context.search.search(filter, function(err:Error, results){
+    return new Promise(resolve => context.search.search(filter, function(err:Error, results:any){
         if (err) throw err;
-        let resultPicks = results.items.map(obj => {let nObj:ResultForPick = {"label":"", "answer": ""};
+        let resultPicks = results.items.map((obj:any) => {let nObj:ResultForPick = {"label":"", "answer": ""};
           if(obj.is_answered && obj.accepted_answer_id){
             nObj.label = obj.title;
             nObj.answer = obj.accepted_answer_id;
@@ -87,7 +87,7 @@ async function buildAnswerSelected(options:any, context:any, id:any) {
     filter: 'withbody',
     site: 'stackoverflow'
   };
-  context.answers.answers(filter, function(err:Error, results){
+  context.answers.answers(filter, function(err:Error, results:any){
     if (err) throw err;
     
     getQuestionAndOpenAsText(options, context, results.items[0])
@@ -99,7 +99,7 @@ async function getQuestionAndOpenAsText(options:any, context:any, answer:any) {
     filter: 'withbody',
     site: 'stackoverflow'
   };
-  context.questions.questions(filter, function(err:Error, results){
+  context.questions.questions(filter, function(err:Error, results:any){
     if (err) throw err;
     const questionFixed = striptags(`QUESTION: ##########################################################
 																		\n${results.items[0].title}
